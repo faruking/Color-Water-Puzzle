@@ -37,7 +37,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _FillAmount: 0.34
+    - _SARM: 1
+    - _ScaleAndRotationMultiplier: 1
     m_Colors:
     - _Color01: {r: 0.735849, g: 0.1909042, b: 0.1909042, a: 0}
+    - _Color02: {r: 0.09825563, g: 0.2038667, b: 0.9056604, a: 0}
+    - _Color03: {r: 0.9058824, g: 0.7594957, b: 0.09803922, a: 0}
+    - _Color04: {r: 0.7410334, g: 0.09803922, b: 0.9058824, a: 0}
   m_BuildTextureStacks: []
