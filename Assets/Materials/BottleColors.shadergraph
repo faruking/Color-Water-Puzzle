@@ -1513,7 +1513,7 @@
     "m_DefaultRefNameVersion": 1,
     "m_RefNameGeneratedByDisplayName": "ScaleAndRotationMultiplier",
     "m_DefaultReferenceName": "_ScaleAndRotationMultiplier",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_SARM",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
