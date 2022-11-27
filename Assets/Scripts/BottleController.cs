@@ -10,6 +10,7 @@ public class BottleController : MonoBehaviour
     public Color[] bottleColors;
     public SpriteRenderer bottleMaskSR;
     public float timeToRotate = 1.0f;
+    public GameController gameController;
 
     public AnimationCurve ScaleAndRotateMultiplierCurv;
     public AnimationCurve FillAmountCurve;
@@ -63,7 +64,6 @@ public class BottleController : MonoBehaviour
                     bottleController.bottleColors[bottleController.numberOfColorsInBottle + i] = topColor;
                 }
                 bottleController.UpdateColorsOnShader();
-
 
             }
             //ChooseRotationPointAndDirection();
@@ -187,6 +187,7 @@ public class BottleController : MonoBehaviour
         bottleController.numberOfColorsInBottle += numberOfColorsToTransfer;
 
         lineRenderer.enabled = false;
+        gameController.updateMoves();
         StartCoroutine(RotateBottleBack());
     }
     IEnumerator RotateBottleBack()
@@ -218,8 +219,8 @@ public class BottleController : MonoBehaviour
     }
     public void UpdateTopCollorValues()
     {
-        Debug.Log("Upadted again....");
-        if(numberOfColorsInBottle !=0)
+        Debug.Log("Updated again....");
+        if(numberOfColorsInBottle != 0)
         {
             numberOfTopColorLayer = 1;
             topColor = bottleColors[numberOfColorsInBottle - 1];
@@ -263,13 +264,13 @@ public class BottleController : MonoBehaviour
     }
     public bool FillBottleCheck(Color colorToCheck)
     {
-        if(numberOfColorsInBottle ==0)
+        if(numberOfColorsInBottle == 0)
         {
             return true;
         }
         else
         {
-            if(numberOfColorsInBottle ==4)
+            if(numberOfColorsInBottle == 4)
             {
                 return false;
             }

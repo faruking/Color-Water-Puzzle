@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using TMPro;
 public class GameController : MonoBehaviour
 {
     public BottleController firstBottle;
     public BottleController secondBottle;
+    public GameObject PlayButton;
+    public GameObject title;
+    public GameObject gamePlayPanel;
+    public TextMeshProUGUI moves;
+    public int numberOfMoves = 24;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Play();
     }
 
     // Update is called once per frame
@@ -60,5 +68,23 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+    }
+    public void Play(){
+        PlayButton.SetActive(false);
+        title.SetActive(false);
+        gamePlayPanel.SetActive(true);
+        Debug.Log("dddddddddddd");
+        moves.text = "Moves Left: " + numberOfMoves;
+    }
+    public void updateMoves(){
+        numberOfMoves--;
+        if (numberOfMoves == 0)
+        {
+            GameOver();
+        }
+        moves.text = "Moves Left : " + numberOfMoves;
+    }
+    public void GameOver(){
+        
     }
 }
