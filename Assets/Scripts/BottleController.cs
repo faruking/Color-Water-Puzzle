@@ -144,6 +144,7 @@ public class BottleController : MonoBehaviour
         float lastAngleValue = 0;
         while (t < timeToRotate)
         {
+            AudioManager.instance.Play("PourSound");
             lerpValue = t / timeToRotate;
             angleValue = Mathf.Lerp(0.0f, directionMultiplier * rotationValues[rotationIndex], lerpValue);
             transform.RotateAround(choosenRotationPoint.position, Vector3.forward, lastAngleValue - angleValue);
@@ -178,6 +179,7 @@ public class BottleController : MonoBehaviour
         updatedNumberOfColors = bottleController.numberOfColorsInBottle;
 
         lineRenderer.enabled = false;
+        // AudioManager.instance.Stop("PourSound");
         StartCoroutine(RotateBottleBack());
     }
       IEnumerator RotateBottleBack()

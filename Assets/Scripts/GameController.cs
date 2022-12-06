@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public  class GameController : MonoBehaviour
 {
+    public static bool mute = false;
     public BottleController firstBottle;
     public BottleController secondBottle;
 
@@ -24,20 +25,20 @@ public  class GameController : MonoBehaviour
     public TextMeshProUGUI infoText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI levelText;
+    public TextMeshProUGUI soundText;
 
 
-    private int numberOfCompletedBottles;
-    private int numberOfMoves = 24;
-    private int score;
-    private int level;
-
+    public int numberOfCompletedBottles;
+    public int numberOfMoves = 24;
+    public int score;
+    public int level;
 
 
     // Start is called before the first frame update
     void Start()
     {
         // Play();
-        
+        AudioManager.instance.Play("bgm");
     }
 
     // Update is called once per frame
@@ -143,7 +144,7 @@ public  class GameController : MonoBehaviour
     public void GameOver(){
         bottleContainer.SetActive(false);
         gameOverPanel.SetActive(true);
-
+        AudioManager.instance.Play("gameover");
     }
     public void levelCompleted(int difficulty){
         if(numberOfCompletedBottles == difficulty){
@@ -152,6 +153,7 @@ public  class GameController : MonoBehaviour
             Time.timeScale = 0.001f;
             PlayerPrefs.SetInt("Score", score);
             PlayerPrefs.SetInt("Level", level + 1);
+            AudioManager.instance.Play("winlevel");
 
             // LoadNextScene();
         }
@@ -182,5 +184,18 @@ public  class GameController : MonoBehaviour
 
         SceneManager.LoadScene(0);
 
+    }
+    public void toggleMute(){
+        if (mute)
+        {
+                    soundText.text = "Sound ON";
+
+            mute = false;
+        }
+        else{
+                    soundText.text = "Sound OFF";
+
+            mute = true;
+        }
     }
 }
