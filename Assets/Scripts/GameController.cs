@@ -34,11 +34,13 @@ public  class GameController : MonoBehaviour
     public int level;
 
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         // Play();
-        AudioManager.instance.Play("bgm");
+        // AudioManager.instance.Play("bgm");
     }
 
     // Update is called once per frame
