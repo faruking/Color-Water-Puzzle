@@ -24,7 +24,6 @@ public class BottleController : MonoBehaviour
     public AnimationCurve ScaleAndRotateMultiplierCurv;
     public AnimationCurve FillAmountCurve;
     public AnimationCurve RotateSpeedMultiplier;
-   
     public float[] fillAmounts;
     public float[] rotationValues;
 
@@ -75,7 +74,7 @@ public class BottleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+      
         if(Input.GetKeyUp(KeyCode.M) && justThisBottle == true)
         {
             UpdateTopCollorValues();
@@ -134,6 +133,7 @@ public class BottleController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         transform.position = endPosition;
+
         StartCoroutine(RotateBottle());
     }
      IEnumerator RotateBottle()
@@ -142,9 +142,10 @@ public class BottleController : MonoBehaviour
         float lerpValue;
         float angleValue;
         float lastAngleValue = 0;
+        AudioManager.instance.Play("PourSound");
+
         while (t < timeToRotate)
         {
-            AudioManager.instance.Play("PourSound");
             lerpValue = t / timeToRotate;
             angleValue = Mathf.Lerp(0.0f, directionMultiplier * rotationValues[rotationIndex], lerpValue);
             transform.RotateAround(choosenRotationPoint.position, Vector3.forward, lastAngleValue - angleValue);
@@ -170,6 +171,7 @@ public class BottleController : MonoBehaviour
             lastAngleValue = angleValue;
             yield return new WaitForEndOfFrame();
         }
+
         angleValue = directionMultiplier * rotationValues[rotationIndex];
         bottleMaskSR.material.SetFloat("_SARM", ScaleAndRotateMultiplierCurv.Evaluate(angleValue));
         bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));

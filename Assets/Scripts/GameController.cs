@@ -16,6 +16,9 @@ public  class GameController : MonoBehaviour
     public GameObject gamePlayPanel;
     public GameObject scorePanel;
     public GameObject optionsPanel;
+    public GameObject backgroundPanel;
+
+    private AudioSource audioSource;
 
     public GameObject levelCompletedPanel;
     public GameObject bottleContainer;
@@ -31,21 +34,33 @@ public  class GameController : MonoBehaviour
     public int numberOfCompletedBottles;
     public int numberOfMoves = 24;
     public int score;
+    public int highScore;
+
     public int level;
-
-
-
 
     // Start is called before the first frame update
     void Start()
     {
         // Play();
-        // AudioManager.instance.Play("bgm");
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //   if(mute){
+        //     audioSource.Stop();
+        // }
+        // else{
+        //     audioSource.Play();
+        // }
+        if (Input.GetKeyDown(KeyCode.Escape))
+{
+    // Back Button was pressed!
+    quitGame();
+}
         if(Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -113,6 +128,7 @@ public  class GameController : MonoBehaviour
         }
     }
     private void Awake() {
+
         score = PlayerPrefs.GetInt("Score",0);
         level = PlayerPrefs.GetInt("Level",1);
         if(score > 0){
@@ -128,11 +144,12 @@ public  class GameController : MonoBehaviour
         }
     }
     public void Play(){
+        // backgroundPanel.SetActive(true);
         PlayButton.SetActive(false);
         title.SetActive(false);
         scoreText.text = "Score: " + score;
         gamePlayPanel.SetActive(true);
-        optionsPanel.SetActive(false);
+        // optionsPanel.SetActive(false);
         levelText.text = "Level: " + level;
         moves.text = "Moves Left: " + numberOfMoves;
         infoText.text = "Click on a bottle then click on another bottle to transfer color";
@@ -164,9 +181,15 @@ public  class GameController : MonoBehaviour
     public void restart(){
         SceneManager.LoadScene(0);
     }
-    public void quitGame(){
+    void OnApplicationQuit()
+    {
         PlayerPrefs.SetInt("Score", 0);
         PlayerPrefs.SetInt("Level", 1);
+    }
+    public void quitGame(){
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
         Application.Quit();
     }
    public void LoadNextScene()
@@ -190,14 +213,18 @@ public  class GameController : MonoBehaviour
     public void toggleMute(){
         if (mute)
         {
-                    soundText.text = "Sound ON";
-
+            soundText.text = "Sound ON";
+            audioSource.Play();
             mute = false;
         }
         else{
-                    soundText.text = "Sound OFF";
-
+            soundText.text = "Sound OFF";
+            audioSource.Stop();
             mute = true;
         }
+    }
+    private void setValues(){
+        PlayerPrefs.SetInt("Score", 0);
+        PlayerPrefs.SetInt("Level", 1);
     }
 }
