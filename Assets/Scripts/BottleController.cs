@@ -142,13 +142,14 @@ public class BottleController : MonoBehaviour
         float lerpValue;
         float angleValue;
         float lastAngleValue = 0;
-        AudioManager.instance.Play("PourSound");
 
         while (t < timeToRotate)
         {
+            
             lerpValue = t / timeToRotate;
             angleValue = Mathf.Lerp(0.0f, directionMultiplier * rotationValues[rotationIndex], lerpValue);
             transform.RotateAround(choosenRotationPoint.position, Vector3.forward, lastAngleValue - angleValue);
+
             bottleMaskSR.material.SetFloat("_SARM", ScaleAndRotateMultiplierCurv.Evaluate(angleValue));
             if(fillAmounts[numberOfColorsInBottle]>FillAmountCurve.Evaluate(angleValue) +0.005f)
             {
@@ -160,6 +161,7 @@ public class BottleController : MonoBehaviour
                     lineRenderer.SetPosition(1, choosenRotationPoint.position - Vector3.up * 0.85f);
 
                     lineRenderer.enabled = true;
+                    AudioManager.instance.Play("PourSound");
                 }
 
                 bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));
@@ -181,7 +183,7 @@ public class BottleController : MonoBehaviour
         updatedNumberOfColors = bottleController.numberOfColorsInBottle;
 
         lineRenderer.enabled = false;
-        // AudioManager.instance.Stop("PourSound");
+        AudioManager.instance.Stop("PourSound");
         StartCoroutine(RotateBottleBack());
     }
       IEnumerator RotateBottleBack()
