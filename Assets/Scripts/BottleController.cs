@@ -71,36 +71,13 @@ public class BottleController : MonoBehaviour
         bottleMaskSR.material.SetColor("_Color03", randomColor3);
         bottleMaskSR.material.SetColor("_Color04", randomColor4);
     }
-    // Update is called once per frame
-    void Update()
-    {
-      
-        if(Input.GetKeyUp(KeyCode.M) && justThisBottle == true)
-        {
-            UpdateTopCollorValues();
-            if (bottleController.FillBottleCheck(topColor))
-            {
-                ChooseRotationPointAndDirection();
-
-                numberOfColorsToTransfer = Mathf.Min(numberOfTopColorLayer, 4 - bottleController.numberOfColorsInBottle);
-                for (int i = 0; i < numberOfColorsToTransfer; i++)
-                {
-                    bottleController.bottleColors[bottleController.numberOfColorsInBottle + i] = topColor;
-                }
-                bottleController.UpdateColorsOnShader();
-
-            }
-            CalculateRotationIndex(4 - bottleController.numberOfColorsInBottle);
-            StartCoroutine(RotateBottle());
-        }
-    
-    }
     public void StartColorTransfer()
     {
         ChooseRotationPointAndDirection();
         numberOfColorsToTransfer = Mathf.Min(numberOfTopColorLayer, 4 - bottleController.numberOfColorsInBottle);
         // numberOfColorsToTransfer = 1;
-
+        if (numberOfColorsToTransfer > 0)
+        {
         Debug.Log(numberOfColorsToTransfer + "number");
         for (int i = 0; i < numberOfColorsToTransfer; i++)
         {
@@ -112,7 +89,12 @@ public class BottleController : MonoBehaviour
 
         transform.GetComponent<SpriteRenderer>().sortingOrder += 2;
         bottleMaskSR.sortingOrder += 2;
-        StartCoroutine(MoveBottle());     
+        StartCoroutine(MoveBottle());   
+        }
+        else{
+            AudioManager.instance.Play("error");
+        }
+         
     }
     IEnumerator MoveBottle()
     {
@@ -178,17 +160,17 @@ public class BottleController : MonoBehaviour
         bottleMaskSR.material.SetFloat("_SARM", ScaleAndRotateMultiplierCurv.Evaluate(angleValue));
         bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));
 
-        numberOfColorsInBottle -= numberOfTopColorLayer;
-        bottleController.numberOfColorsInBottle += numberOfColorsToTransfer;
-        updatedNumberOfColors = bottleController.numberOfColorsInBottle;
-
+        numberOfColorsInBottle -= numberOfTopColorLayer; //for first bottle
+        bottleController.numberOfColorsInBottle += numberOfColorsToTransfer; // for second bottle
+        UpdateTopCollorValues();
+        bottleController.UpdateTopCollorValues();
+        bottleController.checkBottleFill();
         lineRenderer.enabled = false;
         AudioManager.instance.Stop("PourSound");
         StartCoroutine(RotateBottleBack());
     }
       IEnumerator RotateBottleBack()
     {
-
         float t = 0;
         float lerpValue;
         float angleValue;
@@ -227,6 +209,10 @@ public class BottleController : MonoBehaviour
 
         transform.GetComponent<SpriteRenderer>().sortingOrder -= 2;
         bottleMaskSR.sortingOrder -= 2;
+        if(gameController.bottlesRemaining == 0){
+            gameController.levelCompleted();
+        }
+        gameController.updateMoves();
     }
     public void UpdateColorsOnShader()
     {
@@ -254,6 +240,7 @@ public class BottleController : MonoBehaviour
                         if(bottleColors[1].Equals(bottleColors[0]))
                         {
                             numberOfTopColorLayer = 4;
+
                             // bottle.SetActive(false);
                             //Lock bottle
                         }
@@ -286,8 +273,26 @@ public class BottleController : MonoBehaviour
             }
             rotationIndex = 3 - (numberOfColorsInBottle - numberOfTopColorLayer);
         }
+        else
+        {
+            numberOfTopColorLayer = 0;
+        }
     }
-    public bool FillBottleCheck(Color colorToCheck)
+
+    // public bool isFirstBottleEmpty(){
+    //    if(numberOfColorsInBottle == 0)
+    //     {
+    //         return true;
+    //         AudioManager.instance.Play("error");
+    //         Debug.Log("Empty");
+    //     }
+    //     else
+    //     {
+    //         return false;
+    //     }
+    // }
+
+    public bool FillBottleCheck()
     {
         if(numberOfColorsInBottle == 0)
         {
@@ -296,7 +301,7 @@ public class BottleController : MonoBehaviour
         }
         else
         {
-            if(numberOfColorsInBottle == 4)
+            if(numberOfColorsInBottle == 4 || (numberOfColorsInBottle + numberOfColorsToTransfer) > 4)
             {
                 return false;
             }
@@ -337,14 +342,22 @@ public class BottleController : MonoBehaviour
         }
     }
       public bool checkBottleFill(){
-        if (bottleMaskSR.material.GetColor("_Color01") == bottleMaskSR.material.GetColor("_Color02") && bottleMaskSR.material.GetColor("_Color03") == bottleMaskSR.material.GetColor("_Color04"))
+        if (numberOfColorsInBottle == 4)
+        {
+            Debug.Log("rr");
+           if (bottleMaskSR.material.GetColor("_Color01") == bottleMaskSR.material.GetColor("_Color02") && bottleMaskSR.material.GetColor("_Color03") == bottleMaskSR.material.GetColor("_Color04"))
         {
             Debug.Log("bottle filled");
+            gameController.reduceBottle();
             numberOfCompletedBottles++;
-      
-
+            // bottle.SetActive(false);
             return true;
+        }   
+        else{
+            return false;
         }
+        }
+      
         else{
             return false;
         }
